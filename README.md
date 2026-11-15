@@ -14,10 +14,8 @@ This setup uses a **bare git repository** stored in `~/.mdf` to track configs in
 
 
 ## How?
-I don't recommend that you clone this repo. These are my configs. However, I
-want to describe how to do this yourself and have a written guide for myself
-next time I need to set up a new machine with my configs. Feel free to follow 
-along.
+Here is a written guide for myself next time I need to set up a new machine
+with my configs. Feel free to follow along.
 
 
 ### First time set up
@@ -68,7 +66,7 @@ mdf push --set-upstream origin main
 
 1. **Clone the bare repository:**
 ```bash
-git clone --bare https://gitlab.com/<username>/dotfiles.git $HOME/.mdf
+git clone --bare git@github.com:jetkub/dotfiles.git $HOME/.mdf
 ```
 
 2. **Create the alias:**
@@ -100,15 +98,19 @@ Otherwise, running `mdf status` is a total mess of untracked files.
 mdf config --local status.showUntrackedFiles no
 ```
 
-5. **Source your shell config:**
-```bash
-source ~/.zshrc 
+5. **Set upstream branch:**
 
-# I have a custom function to source zsh configs + rebuild the commands hash
-# table with rehash. rehash forces zsh to rebuild the command completion cache 
-# by re-scanning all directories in your $PATH. So in my case, after sourcing
-# .zshrc, run:
-z_reload_shell
+```
+mdf push --set-upstream origin main
+```
+
+6. **Reload your shell profile:**
+```bash 
+# `-l` starts new zsh login shell instead of nesting another shell in your session
+zsh -l
+
+# bash equivalent
+bash -l
 ```
 
 All set. Your dotfiles are now on your new machine and ready to use.
