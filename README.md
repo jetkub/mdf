@@ -1,9 +1,13 @@
 # mdf - manage dotfiles
-A simple dotfile management system using a bare git repo. No symlinks, no complex scripts, just git. Inspired by [this blog post](https://home.codevoid.de/posts/2019-04-27_Manage_dotfiles_with_git.html).
+A simple dotfile management system using a bare git repo. 
+Inspired by [this blog post](https://home.codevoid.de/posts/2019-04-27_Manage_dotfiles_with_git.html).
 
-## What this is
-This setup uses a **bare git repository** stored in `~/.mdf` to track configs in your home directory. The `mdf` command is an alias that lets you use git to manage your configs.
+## What?
+This setup uses a **bare git repository** stored in `~/.mdf` to track
+your config files. Your home directory is the git worktree. 
 
+The `mdf` command is just an alias that lets you use git to manage your
+configs.
 
 ## Why?
 - Just one alias; no symlinks, scripts, or third party tools
@@ -14,147 +18,180 @@ This setup uses a **bare git repository** stored in `~/.mdf` to track configs in
 
 
 ## How?
-Here is a written guide for myself next time I need to set up a new machine
-with my configs. Feel free to follow along.
 
+Here is a written guide.
 
 ### First time set up
 1. **Create the bare repository:**
-```bash
-git init --bare $HOME/.mdf
-```
+
+    ```bash
+    git init --bare $HOME/.mdf
+    ```
 
 2. **Create the alias:**
 
-Add to your shell config wherever you like; I have a separate `zsh_aliases` file.
-```bash
-tee -a ~/.zsh/zsh_aliases << 'EOF'
-
-# mdf alias for bare git repo dotfile management
-alias mdf="git --git-dir=$HOME/.mdf/ --work-tree=$HOME"
-
-EOF
-```
-Source your config so the alias works immediately
-```bash
-source ~/.zsh/zsh_aliases
-```
+    Add to your shell config wherever you like; I have a separate `zsh_aliases` file.
+    
+    ```bash
+    tee -a ~/.zsh/zsh_aliases << 'EOF'
+    
+    # mdf alias for bare git repo dotfile management
+    alias mdf="git --git-dir=$HOME/.mdf/ --work-tree=$HOME"
+    EOF
+    ```
+    Source your config so the alias works immediately
+    ```bash
+    source ~/.zsh/zsh_aliases
+    ```
 
 3. **Configure git to hide untracked files:**
 
-With this, `mdf status` will only show files you've explicitly added to the
-repo, thus everything else in your `$HOME` directory is ignored.
-Otherwise, running `mdf status` is a total mess of untracked files.
-```bash
-mdf config --local status.showUntrackedFiles no
-```
+    With this, `mdf status` will only show files you've explicitly added 
+    to the repo, thus everything else in your `$HOME` directory is
+    ignored.
+    
+    Otherwise, running `mdf status` displays a total mess of untracked 
+    files.
+    ```bash
+    mdf config --local status.showUntrackedFiles no
+    ```
 
 4. **Add your first config files:**
-```bash
-mdf add .zshrc .zshenv .zprofile # or whatever zsh files you have
-mdf add .zsh/zsh_aliases .zsh/zsh_key_binds .zsh/zsh_completions .zsh/zsh_prompt
-mdf commit -m "Initial commit: zsh config"
-```
+    ```bash
+    mdf add .zshrc .zshenv .zprofile # or whatever zsh files you have
+    mdf add .zsh/zsh_aliases .zsh/zsh_key_binds .zsh/zsh_completions .zsh/zsh_prompt
+    mdf commit -m "Initial commit: zsh config"
+    ```
 
 5. **Add remote repo and push:**
-```bash
-mdf remote add origin git@gitlab.com:<username>/dotfiles.git
-mdf push --set-upstream origin main
-```
+    ```bash
+    mdf remote add origin git@github.com:jetkub/dotfiles.git
+    mdf push --set-upstream origin main
+    ```
 
 ### New machine setup
 
+Follow these steps next time I need to set up a new machine with my 
+configs.
+
 1. **Clone the bare repository:**
-```bash
-git clone --bare git@github.com:jetkub/dotfiles.git $HOME/.mdf
-```
+    ```bash
+    git clone --bare git@github.com:jetkub/dotfiles.git $HOME/.mdf
+    ```
 
 2. **Create the alias:**
 
-If you're tracking your shell config with `mdf`, then we only need to create 
-the alias for this session. Once we checkout the files, we'll have all the 
-aliases we've already configured, including `mdf`.
-```bash
-alias mdf="git --git-dir=$HOME/.mdf/ --work-tree=$HOME"
-```
+    If you're tracking your shell config with `mdf`, then we only need 
+    to create the alias for this session. Once we checkout the files,
+    we'll have all the aliases we've already configured, including 
+    `mdf`.
+    ```bash
+    alias mdf="git --git-dir=$HOME/.mdf/ --work-tree=$HOME"
+    ```
 
 3. **Checkout files:**
 
-Note that you'll need to run `mdf checkout` with the `-f` flag to force the
-checkout. This means that everything will be restored from the repo to match
-exactly what is in git. This is a destructive action if you have existing
-config files on your machine, such as a local `.zshrc`. The local copy will be
-overwritten. 
-```bash
-mdf checkout -f
-```
+    Note that you'll need to run `mdf checkout` with the `-f` flag to 
+    force the checkout. This means that everything will be restored from 
+    the repo to match exactly what is in git. This is a destructive
+    action if you have existing config files on your machine, such as a 
+    local `.zshrc`. The local copy will be overwritten.
+    ```bash
+    mdf checkout -f
+    ```
 
 4. **Configure git to hide untracked files:**
 
-With this, `mdf status` will only show files you've explicitly added to the
-repo, thus everything else in your `$HOME` directory is ignored.
-Otherwise, running `mdf status` is a total mess of untracked files.
-```bash
-mdf config --local status.showUntrackedFiles no
-```
+    With this, `mdf status` will only show files you've explicitly added 
+    to the repo, thus everything else in your `$HOME` directory is 
+    ignored. 
+    
+    Otherwise, running `mdf status` displays a total mess of untracked 
+    files.
+    ```bash
+    mdf config --local status.showUntrackedFiles no
+    ```
 
 5. **Set upstream branch:**
 
-```
-mdf push --set-upstream origin main
-```
+    ```
+    mdf push --set-upstream origin main
+    ```
 
 6. **Reload your shell profile:**
-```bash 
-# `-l` starts new zsh login shell instead of nesting another shell in your session
-zsh -l
 
-# bash equivalent
-bash -l
-```
+    ```bash 
+    # `-l` starts new zsh login shell instead of nesting another shell in your session
+    zsh -l
+    
+    # bash equivalent
+    bash -l
+    ```
 
-All set. Your dotfiles are now on your new machine and ready to use.
+    All set. Your dotfiles are now on your new machine and ready to use.
 
 
 ## Daily workflow
 
 ### Making changes
+
 After editing your dotfiles (like `.zshrc`, `.vimrc`, etc.):
 
-Check what you've changed
-```bash
-mdf status
-```
+1. **Check what you've changed:**  
+    ```bash
+    mdf status
+    ```
 
-Add changed files
-```bash
-mdf add .zshrc  # Add specific files
-# OR
-mdf add -u      # Add all modified tracked files, equivalent to mdf add --update
-```
+2. **Add changed files:**  
+    ```bash
+    mdf add .zshrc  # Add specific files
+    # OR
+    mdf add -u      # Add all modified tracked files, equivalent to mdf add --update
+    ```
 
-Commit changes
-```bash
-mdf commit -m "Update shell config"
-```
+3. **Commit changes:**  
+    ```bash
+    mdf commit -m "Update shell config"
+    ```
 
-Push to remote git repo
-```bash
-mdf push
-```
+4. **Push to remote git repo:**  
+    ```bash
+    mdf push
+    ```
+
 
 ### Getting changes on other machines
-Pull latest changes. Files will update automatically. Easy.
+
+Pull latest changes (assuming internet is accessible). Files will update automatically. Easy.
 ```bash
 mdf pull
 ```
 
+
 ### Adding new config files
+
 ```bash
 mdf add .vim/vimrc
 mdf commit -m "Add vim config"
 mdf push
 ```
+
+
+### `checkout` vs `pull` - when to use which
+
+**`mdf checkout`** - Use for:
+- **Setup on a new machine** (placing files from git into home dir)
+- **Overwriting local changes** you want to discard
+- **Switching branches** (if you use multiple config branches)
+- **Updating configs on an air-gapped machine** (`mdf checkout -f`) after syncing files from your main workstation (e.g. w/ rsync, scp, or a custom synsc sript)
+
+**`mdf pull`** - Use for:
+- **Daily syncing** (getting updates from other machines)
+- **Regular workflow** (automatically updates your actual tracked files)
+
+**Key difference**: `pull` fetches from remote AND updates your files.
+`checkout` only updates files from what's already in local git.
+
 
 ## How It Works
 
@@ -167,36 +204,25 @@ This tells git:
 - Store **git data** in `~/.mdf/` (instead of `.git/`)
 - Use your entire home directory `~` as the **working tree**
 
-Your dotfiles can live anywhere in your home directory (`~/.zshrc`, `~/.vim/vimrc/`,
-etc.) while git's tracking data stays contained in `~/.mdf/`.
+Your dotfiles can live anywhere in your home directory (`~/.zshrc`, 
+`~/.vim/vimrc/`, etc.) while git's tracking data stays contained in
+`~/.mdf/`.
 
-The key is that git can see your entire home directory but will only track files you explicitly add
-with `mdf add`. Combined with `mdf config --local status.showUntrackedFiles no`, you get a clean
-workflow where `mdf status` only shows your managed dotfiles, not every file in your home
-directory.
+The key is that git can see your entire home directory but will only 
+track files you explicitly add with `mdf add`. Combined with 
+`mdf config --local status.showUntrackedFiles no`, you get a clean
+workflow where `mdf status` only shows your managed dotfiles, not every 
+file in your home directory.
 
-Essentially, you get git's full power for managing configs without turning your home directory into
-a messy git repo.
+Essentially, you get git's full power for managing configs without 
+turning your home directory into a messy git repo.
 
 ### `git` bare repository explained
-A bare repository contains only git's tracking data (objects, refs, etc.)
-without a working directory. By setting `$HOME` as the working tree, git treats
-your home directory as the repository, but only tracks files you explicitly add.
+A bare repository contains only git's tracking data (objects, refs, 
+etc.) without a working directory. By setting `$HOME` as the working 
+tree, git treats your home directory as the repository, but only tracks 
+files you explicitly add.
 
-
-### `checkout` vs `pull` - when to use which
-
-**`mdf checkout`** - Use for:
-- **Setup on a new machine** (placing files from git into home dir)
-- **Overwriting local changes** you want to discard
-- **Switching branches** (if you use multiple config branches)
-
-**`mdf pull`** - Use for:
-- **Daily syncing** (getting updates from other machines)
-- **Regular workflow** (automatically updates your actual tracked files)
-
-**Key difference**: `pull` fetches from remote AND updates your files.
-`checkout` only updates files from what's already in local git.
 
 ## Useful commands
 
@@ -248,9 +274,9 @@ Make sure you've created the remote repository on GitLab/GitHub/wherever first:
 # Check current remote
 mdf remote -v
 # Add remote
-mdf remote add origin git@gitlab.com:<username>/dotfiles.git
+mdf remote add origin git@github.com:jetkub/dotfiles.git
 # Or change remote
-mdf remote set-url origin git@github.com:<username>/dotfiles.git
+mdf remote set-url origin git@<other-vcs>:<username>/<reponame>.git
 ```
 
 ### Alias not working
@@ -307,6 +333,7 @@ Track configuration files you want to sync across machines:
 - Sensitive files (`.ssh/`, API keys)
 - Large binary files
 - Temp files
+
 
 ## Advanced Usage
 You have the power of `git`!
