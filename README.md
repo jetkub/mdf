@@ -183,7 +183,7 @@ mdf push
 - **Setup on a new machine** (placing files from git into home dir)
 - **Overwriting local changes** you want to discard
 - **Switching branches** (if you use multiple config branches)
-- **Updating configs on an air-gapped machine** (`mdf checkout -f`) after syncing files from your main workstation (e.g. w/ rsync, scp, or a custom synsc sript)
+- **Updating configs on an air-gapped machine** (`mdf checkout -f`) after syncing files from your main workstation (e.g. w/ `rsync`, `scp`, or a custom sync script)
 
 **`mdf pull`** - Use for:
 - **Daily syncing** (getting updates from other machines)
